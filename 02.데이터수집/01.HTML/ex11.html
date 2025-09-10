@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            font-family: "Jua", sans-serif;
+        }
+        .box {
+            box-shadow: 5px 5px 5px gray;
+        }
+    </style>
+</head>
+<body>
+    <div class="container p-5">
+        <h1 class="text-center mb-5">도서검색</h1>
+        <div>
+            <form name="frm">
+                <input placeholder="검색어" name="query">
+                <button class="btn btn-primary btn-sm">검색</button>
+            </form>
+        </div>
+        <hr>
+        <div id="books" class="row"></div>
+        <script id="temp" type="x-handlebars-template">
+            {{#each documents}}
+                <div class="col-6 col-md-3 col-lg-2 mb-2 box p-2">
+                    <a href="{{url}}">
+                        <img src="{{thumbnail}}" width="100%"">
+                    </a>
+                    <div class="text-truncate">{{table}}</div>
+                    <div>{{sale_price}}</div>
+                </div>
+            {{/each}}
+        </script>
+    </div>
+</body>
+<script>
+    const page = 1;
+    let query = '파이썬';
+    const size = 12;
+
+    // 폼 요소를 정확히 선택해야 합니다. 예: id가 'frm'인 경우
+    const frm = document.getElementById('frm');
+
+    $(frm).on("submit", function(event) {
+        event.preventDefault();
+        query = $(frm).find("[name='query']").val(); // query 입력 필드 선택
+        if (query === '') {
+            alert('검색어를 입력하세요');
+        } else {
+            getBooks();    
+        }
+    });
+    function getBooks(){
+        $.ajax({
+            type:'get',
+            url:'https://dapi.kakao.com/v3/search/book?target=title',
+            dataType:'json', 
+            headers:{'Authorization': 'KakaoAK 5cacdaa51d206ff5905771eb113bb8e4'},
+            data:{page, query, size},
+            success:function(data){
+                console.log(data)
+                //1.템플릿 컴파일
+                temp = Handlebars.compile($('#temp').html());
+                temp_data = temp(data);
+                $('#books').html(temp_data);
+
+            }
+        });
+    }
+    getBooks()
+</script>
+</html>
