@@ -58,7 +58,7 @@ def submenu():
                 elif sel==1: df=df.sort_index(ascending=False)
                 elif sel==2: df=df.sort_values('이름')
                 elif sel==2: df=df.sort_values('평균', ascending=False)
-                for idx in df.index:
+                for idx in df.head(3).index:
                     row = df.loc[idx]
                     print(f'지원번호:{idx:02d}', end=' ')
                     print(f'이름:{row["이름"]}',end=' ')
@@ -87,7 +87,7 @@ def submenu():
                     if len(df[filt].index)==0:
                         print('검색내용이 없습니다')
                         continue
-                    for idx in df.head(3).index:
+                    for idx in df[filt].index:
                         row = df.loc[idx]
                         print(f'지원번호:{idx} 이름:{row["이름"]} 학교:{row["학교"]} 평균:{row["평균"]}') 
                 elif sel==3:
