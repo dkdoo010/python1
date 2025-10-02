@@ -1,0 +1,86 @@
+<div class="row py-5 justify-content-center">
+  <div class="col-12-md-8 col-lg-6">
+    <h1 class="text-center">{{title}}</h1>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home-tab-pane"
+          type="button" role="tab" aria-controls="home-tab-pane" aria-selected="true">클러스터수</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile-tab-pane"
+          type="button" role="tab" aria-controls="profile-tab-pane" aria-selected="false">그래프</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-tab-pane"
+          type="button" role="tab" aria-controls="contact-tab-pane" aria-selected="false">데이터</button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="myTabContent">
+      <!-- 클러스터수 -->
+      <div class="tab-pane fade show active" id="home-tab-pane" role="tabpanel" aria-labelledby="home-tab" tabindex="0">
+        <img src="/kmeans/cluster" width="100%">
+      </div>
+
+      <!-- 그래프 -->
+      <div class="tab-pane fade" id="profile-tab-pane" role="tabpanel" aria-labelledby="profile-tab" tabindex="0">
+        <div class="row">
+          <div class="col-8">
+            <div class="input-group">
+              <select id="no" class="form-select">
+                <option>1개</option>
+                <option>2개</option>
+                <option>3개</option>
+                <option>4개</option>
+                <option>5개</option>
+              </select>
+              <button id="btn" class="btn btn-success">그래프출력</button>
+            </div>
+          </div>
+          <div class="mt-2">
+            <img id="graph" src="http://placehold.co/500x300" width="100%">
+          </div>
+        </div>
+      </div>
+
+      <!-- 데이터 -->
+      <div class="tab-pane fade" id="contact-tab-pane" role="tabpanel" aria-labelledby="contact-tab" tabindex="0">
+        <!-- <button class="btn btn-success w-100"></button> -->
+        <div class="row mt-3">
+          <div class="col-8">
+            <div class="input-group">
+              <select id="table-no" class="form-select">
+                <option>1개</option>
+                <option>2개</option>
+                <option>3개</option>
+                <option>4개</option>
+                <option>5개</option>
+              </select>
+              <button id="table-btn" class="btn btn-success">cluster 계산</button>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3" id="table-area">
+          {{ table|safe }}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 그래프 출력
+  $("#btn").on("click", function () {
+    let no = $("#no").val().replace('개', '');
+    $("#graph").attr("src", '/kmeans/graph?no=' + no);
+  });
+
+  // 데이터 테이블 업데이트
+  $("#table-btn").on("click", function () {
+    let no = $("#table-no").val().replace('개', '');
+    $.get('/kmeans/data?no=' + no, function (html) {
+      $("#table-area").html(html);
+    });
+  });
+</script>

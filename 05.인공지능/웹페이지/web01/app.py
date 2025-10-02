@@ -7,6 +7,7 @@ plt.rc('axes', unicode_minus=False)
 from io import BytesIO
 app = Flask(__name__, template_folder='temp')
 
+
 # 최소제곱법 모델 생성 함수
 def model_linear():
     dataset = pd.read_csv(f'{app.root_path}/data/LinearRegressionData.csv')

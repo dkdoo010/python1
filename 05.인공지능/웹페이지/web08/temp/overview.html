@@ -1,0 +1,95 @@
+<head>
+  <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.min.js"></script>
+</head>
+<body>
+  <div class="py-5">
+    <h1 class="text-center mb-5">영화 추천</h1>
+
+    <div class="row">
+      <div class="col-12 col-md-6 col-lg-4">
+        <form name="frm">
+          <div class="input-group">
+            <input name="title" placeholder="영화제목" class="form-control" value="">
+            <button class="btn btn-success">영화추천</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <hr>
+
+    <div id="result" class="row"></div>
+
+    {% raw %}
+    <script id="temp_result" type="text/x-handlebars-template">
+      {{#each .}}
+        <div class="col-2 col-md-3 col-lg-2 mb-2">
+          <img src="{{poster}}" width="100%" class="movie-img"
+               data-title="{{title}}" data-overview="{{overview}}" data-poster="{{poster}}">
+          <div class="card-footer">
+            <div class="title text-truncate">{{title}}</div>
+          </div>
+        </div>
+      {{/each}}
+    </script>
+    {% endraw %}
+
+    <!-- 모달 -->
+    <div class="modal fade" id="overview" tabindex="-1" aria-labelledby="overviewLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="overviewLabel">영화 정보</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="닫기"></button>
+          </div>
+          <div class="modal-body">
+            <!-- 영화 정보가 여기에 들어감 -->
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 폼 제출 시 추천 실행
+    $(document).on("submit", "form[name='frm']", function(e) {
+      e.preventDefault();
+      const title = $(this.title).val();
+
+      $.ajax({
+        type: "get",
+        url: "/overview/data",
+        data: { title },
+        success: function(data) {
+          const template = Handlebars.compile($("#temp_result").html());
+          $("#result").html(template(data));
+        }
+      });
+    });
+
+    // 포스터 클릭 시 해당 영화 줄거리 모달에 표시
+    $(document).on("click", ".movie-img", function() {
+      const title = $(this).data("title");
+      const overview = $(this).data("overview");
+      const poster = $(this).data("poster");
+
+      $("#overview .modal-title").text(title);
+      $("#overview .modal-body").html(`
+        <img src="${poster}" class="img-fluid mb-3">
+        <p>${overview}</p>
+      `);
+
+      $("#overview").modal("show");
+    });
+  </script>
+</body>
+
+
+
+
+
+

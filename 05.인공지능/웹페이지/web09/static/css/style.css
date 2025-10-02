@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Jua&display=swap');
+
+#box span {
+    color:red;
+}
+
+* {
+            font-family: "Jua", sans-serif;
+}
+
+#box .modal-body{
+    font-size: 20px;
+    color:blue;
+}
+
+td, th {
+    text-align: center;
+}
+table.dataframe th, td {
+    text-align: center;   /* 가운데 정렬 */
+    vertical-align: middle; /* 세로도 가운데 맞춤 */
+}
+/* 제목 가운데 정렬 */
+h2, h3 {
+    text-align: center;
+    font-weight: bold;
+    margin-top: 20px;
+}
+
+/* 테이블 가운데 정렬 */
+table {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* 테이블 셀 내용 가운데 정렬 */
+table td, table th {
+    text-align: center;
+}
+
+/* 그래프(canvas) 가운데 정렬 */
+#resultChart {
+    display: block;
+    margin: 30px auto;
+    max-width: 800px;
+}
+
+.title {
+    font-size: 12px;
+}
+
+/* .description {
+    cursor:
+} */

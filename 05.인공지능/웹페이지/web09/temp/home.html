@@ -1,0 +1,127 @@
+<div class="my-5">
+    <div id="messageBox" class="alert alert-warning d-none" role="alert"></div>
+
+    <h1 class="text-center mb-5">{{title}}</h1>
+    <div class="row">
+        <div class="col-12 col-md-6 col-lg-4">
+            <form name="frm">
+                <div class="input-group">
+                    <input name="query" class="form-control">
+                    <button class="btn btn-success">검색</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="news"></div>
+
+        <div class="text-center">
+            <button id="prevBtn" class="btn btn-success btn-sm">이전</button>
+            <span class="px-3" id="pageInfo">1</span>
+            <button id="nextBtn" class="btn btn-success btn-sm">다음</button>
+        </div>
+
+        {%raw%}
+        <script id="temp" type="text/x-handlebars-template">
+            {{#each .}}
+                <div>
+                    <div class="text end">
+                        <button class="btn btn-danger btn-sm" data-text="{{description}}">감성분석</button>
+                        <h5><a href="{{link}}" target="_blank">{{{title}}}</a></h5>
+                        <div class="description text-truncate">
+                            {{{description}}}
+                        </div>
+                    </div>
+                </div>
+            {{/each}}
+        </script>
+        {%endraw%}
+    </div>
+</div>
+
+<script>
+    let currentPage = 1;
+    const display = 5;
+
+    // 감성분석 버튼 클릭
+    $("#news").on("click", ".btn-danger", function(){
+        $.ajax({
+            type: "get",
+            url: "/predict",
+            data: { text: $(this).data("text") },
+            success: function(data){
+                showBox(`이 기사는 <span class="red">${data}</span>적 기사입니다`);
+            }
+        });
+    });
+
+    // 설명 클릭 시 펼치기/접기
+    $("#news").on("click", ".description", function(){
+        $(this).toggleClass("text-truncate");
+    });
+
+    // 검색 폼 제출
+    $(frm).on("submit", function(e){
+        e.preventDefault();
+        currentPage = 1;
+        const query = $(frm.query).val();
+        if(query == ""){
+            showBox("검색어를 입력하세요!");
+            return;
+        }
+        getNews(query, currentPage);
+    });
+
+    // 이전 버튼
+    $("#prevBtn").on("click", function(){
+        if(currentPage > 1){
+            currentPage--;
+            getNews($(frm.query).val(), currentPage);
+        }
+    });
+
+    // 다음 버튼
+    $("#nextBtn").on("click", function(){
+        currentPage++;
+        getNews($(frm.query).val(), currentPage);
+    });
+
+    // 검색 결과 가져오기
+    function getNews(query, page){
+        const start = (page - 1) * display + 1;
+        $.ajax({
+            type: "get",
+            url: "/search",
+            data: { query, start, display },
+            success: function(data){
+                const length = data.length;
+                if(length == 0){
+                    showBox("검색내용이 없습니다");
+                    return;
+                }
+                const template = Handlebars.compile($("#temp").html());
+                const html = template(data);
+                $("#news").html(html);
+                $("#pageInfo").text(page);
+            }
+        });
+    }
+
+    // 메시지 박스 표시
+    function showBox(message) {
+        $('#messageBox').html(message).removeClass('d-none');
+        setTimeout(() => {
+            $('#messageBox').addClass('d-none');
+        }, 3000);
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
