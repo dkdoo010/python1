@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ item.name }} 옵션 선택</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 30px;
+    }
+    input[type="number"] {
+      width: 60px;
+      text-align: center;
+    }
+    label {
+      font-weight: bold;
+    }
+    .disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    #price-preview {
+      font-weight: bold;
+      margin-top: 20px;
+      color: green;
+    }
+
+    button {
+      background-color: #ff7e5f;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #eb5e3e;
+    }
+
+    body.dark-mode {
+      background-color: #121212;
+      color: #e0e0e0;
+    }
+
+    body.dark-mode input {
+      background-color: #1f1f1f;
+      color: #fff;
+      border: 1px solid #555;
+    }
+
+    body.dark-mode button {
+      background-color: #333;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <button id="toggle-dark" style="margin-bottom: 10px;">🌙 다크모드</button>
+
+  <h2>{{ item.name }} 옵션 선택</h2>
+
+  <form method="post">
+    <p><label>기본 수량:</label> <strong>{{ base_qty }}</strong> (수정 불가)</p>
+
+    <p>
+      <label>L사이즈 교환 <span style="color: green;">(+1000원/개)</span>:</label><br>
+      <input type="number"
+             name="l_qty"
+             min="0"
+             max="{{ base_qty }}"
+             value="{{ selected.l }}"
+             {% if base_qty == 0 %}disabled{% endif %}>
+      <br><small>※ 최대 {{ base_qty }}개까지 선택 가능</small>
+    </p>
+
+    <p>
+      <label>아이스크림 추가 <span style="color: green;">(+700원/개)</span>:</label><br>
+      <input type="number"
+             name="ice_qty"
+             min="0"
+             value="{{ selected.ice }}"
+             {% if base_qty == 0 %}disabled{% endif %}>
+      <br><small>※ 제한 없음</small>
+    </p>
+
+    <p id="price-preview">총 추가 금액: 0원</p>
+
+    <button type="submit" {% if base_qty == 0 %}disabled class="disabled"{% endif %}>다음</button>
+  </form>
+
+  {% if base_qty == 0 %}
+    <p style="color: red;">※ 기본 수량이 0이므로 옵션을 선택할 수 없습니다.</p>
+    <a href="/"><button>메뉴로 돌아가기</button></a>
+  {% endif %}
+
+  <script>
+    function updatePrice() {
+      const l = parseInt(document.querySelector('[name="l_qty"]').value) || 0;
+      const ice = parseInt(document.querySelector('[name="ice_qty"]').value) || 0;
+      const total = l * 1000 + ice * 700;
+      document.getElementById('price-preview').textContent = `총 추가 금액: ${total.toLocaleString()}원`;
+    }
+
+    document.querySelector('[name="l_qty"]').addEventListener('input', updatePrice);
+
+
+
+
+
+
+
+
